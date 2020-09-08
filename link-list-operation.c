@@ -1,55 +1,103 @@
-#include<stdio.h>
-#include<stdlib.h>
+// Linked list operations in C
 
-struct node 
-{
-    int data;
-    struct node *prev;
-    struct node *next;
+#include <stdio.h>
+#include <stdlib.h>
+
+// Create a node
+struct Node {
+  int item;
+  struct Node* next;
 };
 
-void printLinList(struct node *head)
-{
-    while( head->next != NULL)  {
-        printf("%d\n",head->data);
-        head=head->next;
+void insertAtBeginning(struct Node** ref, int data) {
+  // Allocate memory to a node
+  struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
 
-    }
-}
+  // insert the item
+  new_node->item = data;
+  new_node->next = (*ref);
 
-void AddAtBeginning ( struct node *head, int data)  {
-    struct node *newNode = malloc(sizeof(struct node));
-    head->next=newNode->next;
-    newNode->prev=head;
-    newNode->data=data;
+  // Move head to new node
+  (*ref) = new_node;
 }
 
-void AddAtEnd(struct node *lastNode, int data)  {
-    struct node *newNode = malloc(sizeof(struct node));
-    lastNode->next = newNode;
-    newNode->prev= lastNode;
-    newNode->data=data;
+// Insert a node after a node
+void insertAfter(struct Node* node, int data) {
+  if (node == NULL) {
+    printf("the given previous node cannot be NULL");
+    return;
+  }
 
-}
-void AddAtPosition(struct node *prevNode, struct node *nextNode, int data)  {
-    struct node *newNode = malloc(sizeof(struct node));
-    prevNode->next=newNode;
-    newNode->next=nextNode;
-    nextNode->prev=newNode;
-    newNode->data=data;
-}
-void modify(struct node *currentNode, int data)  {
-    currentNode->data=data;
-}
-void DeleteAtBeginning( struct node *head, struct node *currentNode)    {
-    head->next=currentNode->next;
-    //return head;
+  struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+  new_node->item = data;
+  new_node->next = node->next;
+  node->next = new_node;
 }
 
-int main()
-{
-    struct Node* head = NULL;
-    AddAtBeginning(head, 5);
-    AddAtBeginning(head, 6);
-    printLinList(head);
+void insertAtEnd(struct Node** ref, int data) {
+  struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+  struct Node* last = *ref;
+
+  new_node->item = data;
+  new_node->next = NULL;
+
+  if (*ref == NULL) {
+    *ref = new_node;
+    return;
+  }
+
+  while (last->next != NULL)
+    last = last->next;
+
+  last->next = new_node;
+  return;
+}
+
+void deleteNode(struct Node** ref, int key) {
+  struct Node *temp = *ref, *prev;
+
+  if (temp != NULL && temp->item == key) {
+    *ref = temp->next;
+    free(temp);
+    return;
+  }
+  // Find the key to be deleted
+  while (temp != NULL && temp->item != key) {
+    prev = temp;
+    temp = temp->next;
+  }
+
+  // If the key is not present
+  if (temp == NULL) return;
+
+  // Remove the node
+  prev->next = temp->next;
+
+  free(temp);
+}
+
+// Print the linked list
+void printList(struct Node* node) {
+  while (node != NULL) {
+    printf(" %d ", node->item);
+    node = node->next;
+  }
+}
+
+// Driver program
+int main() {
+  struct Node* head = NULL;
+
+  insertAtEnd(&head, 1);    //Passingthe address of head//.
+  insertAtBeginning(&head, 2);
+  insertAtBeginning(&head, 3);
+  insertAtEnd(&head, 4);
+  insertAfter(head->next, 5);
+
+  printf("Linked list: ");
+  printList(head);
+
+  printf("\nAfter deleting an element: ");
+  deleteNode(&head, 3);
+  printList(head);
 }
