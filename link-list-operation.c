@@ -88,7 +88,7 @@ void printList(struct Node* node) {
 int main() {
   struct Node* head = NULL;
 
-  insertAtEnd(&head, 1);    //Passingthe address of head//.
+  insertAtEnd(&head, 1);    //Passing the address of head//.
   insertAtBeginning(&head, 2);
   insertAtBeginning(&head, 3);
   insertAtEnd(&head, 4);
